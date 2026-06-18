@@ -44,7 +44,7 @@ export default function LoginPage() {
 
         <p
           className="
-            text-gray-500
+            text-black
             mb-10
           "
         >
@@ -83,7 +83,7 @@ export default function LoginPage() {
           className="
             mt-8
             text-sm
-            text-gray-400
+            text-black
           "
         >
           Powered by Auth0
