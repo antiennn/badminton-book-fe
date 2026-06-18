@@ -103,6 +103,7 @@ export default function Home() {
   const [nearYouEnabled, setNearYouEnabled] = useState(false);
   const [distanceKm, setDistanceKm] = useState(5);
   const [nearYouLoading, setNearYouLoading] = useState(false);
+  const [debouncedDistanceKm, setDebouncedDistanceKm] = useState(distanceKm);
   const [openMenu, setOpenMenu] = useState(false);
   const [geoError, setGeoError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{
@@ -114,6 +115,15 @@ export default function Home() {
   const PAGE_SIZE = 10;
 
   const [syncUser, { data, loading }] = useMutation(SYNC_USER);
+
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedDistanceKm(distanceKm);
+    }, 300); // debounce 300ms
+
+    return () => clearTimeout(timer);
+  }, [distanceKm]);
 
   const todayKey = useMemo(() => formatDateKey(new Date()), []);
   const tomorrowKey = useMemo(() => {
@@ -140,11 +150,11 @@ export default function Home() {
         nearYouEnabled && userLocation ? userLocation.longitude : undefined,
       latitude:
         nearYouEnabled && userLocation ? userLocation.latitude : undefined,
-      withinKm: nearYouEnabled && userLocation ? distanceKm : undefined,
+      withinKm: nearYouEnabled && userLocation ? debouncedDistanceKm : undefined,
       page: currentPage,
       limit: PAGE_SIZE,
     }),
-    [nearYouEnabled, selectedDay, userLocation, distanceKm, currentPage],
+    [nearYouEnabled, selectedDay, userLocation, debouncedDistanceKm, currentPage],
   );
 
   const {
@@ -491,6 +501,7 @@ export default function Home() {
                 <span>1 km</span>
                 <span>5 km</span>
                 <span>10 km</span>
+                <span>15 km</span>
                 <span>20 km</span>
               </div>
             </div>
